@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Square, RotateCcw, Eye, Video as VideoIcon, FolderInput, Mic, ChevronRight, ChevronLeft, Save, Play, Clock, X, Info } from 'lucide-react';
+import { Square, RotateCcw, Eye, Video as VideoIcon, FolderInput, Mic, ChevronRight, ChevronLeft, Save, Play, Clock, X, Info, Bookmark } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { Question, Recording, Note } from '../types';
 import { getQuestions, saveRecording, getNote, saveNote, saveQuestion } from '../services/db';
@@ -447,135 +447,138 @@ const Practice: React.FC = () => {
         </div>
 
 
-        {showNoteHint && (
-    <div className="mt-4">
-        <OnboardingHint 
-            message="Select a recording mode below. 'Complete Session' gives you 60 seconds unrecorded to prepare, followed by 2 minutes and 30 seconds to record your answer. 'Answer Only' begins recording your answer immediately."
-            onDismiss={() => setShowNoteHint(false)}
-        />
-    </div>
-)}
-
-
-    {/* Controls Section */}
-<div className="flex flex-col items-center py-4 min-h-[140px] justify-center space-y-6 max-w-4xl mx-auto pb-20">
-
-  {/* Setup Phase */}
-  {phase === 'setup' && (
-    <div className="w-full bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-      <h3 className="font-bold text-slate-800 mb-4 text-center text-lg">Select Practice Mode</h3>
-
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        {/* Complete Session */}
-        <label
-          className={`flex-1 cursor-pointer rounded-full border transition-all px-4 py-3 flex items-center justify-center
-            ${mode === 'prep-answer' ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-200' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}
-        >
-          <div className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="mode"
-              className="w-4 h-4 text-indigo-600 accent-indigo-600 border-gray-300"
-              checked={mode === 'prep-answer'}
-              onChange={() => setMode('prep-answer')}
-            />
-            <span className={`font-semibold ${mode === 'prep-answer' ? 'text-indigo-600' : 'text-slate-900'}`}>
-              Complete Session
-            </span>
-          </div>
-        </label>
-
-        {/* Answer-Only Session */}
-        <label
-          className={`flex-1 cursor-pointer rounded-full border transition-all px-4 py-3 flex items-center justify-center
-            ${mode === 'answer-only' ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-200' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}
-        >
-          <div className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="mode"
-              className="w-4 h-4 text-indigo-600 accent-indigo-600 border-gray-300"
-              checked={mode === 'answer-only'}
-              onChange={() => setMode('answer-only')}
-            />
-            <span className={`font-semibold ${mode === 'answer-only' ? 'text-indigo-600' : 'text-slate-900'}`}>
-              Answer-Only Session
-            </span>
-          </div>
-        </label>
-      </div>
-
-      <div className="flex justify-center">
-        <button
-          onClick={handleStartSequence}
-          className="flex items-center gap-2 px-10 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-semibold shadow-md transition-transform transform hover:scale-105"
-        >
-          Start Session
-        </button>
-      </div>
-    </div>
-  )}
-
-  {/* Prep Phase */}
-  {phase === 'prep' && (
-    <button
-      onClick={() => {
-        clearInterval(timerRef.current!);
-        startPreAnswer();
-      }}
-      className="px-6 py-3 bg-indigo-600 text-white rounded-full font-medium shadow-md hover:bg-indigo-700 transition-colors"
-    >
-      Skip preparation and start answering
-    </button>
-  )}
-
-  {/* Answering Phase */}
-  {phase === 'answering' && (
-    <button
-      onClick={handleStopRecording}
-      className="flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-semibold shadow-lg animate-pulse"
-    >
-      <Square size={16} fill="currentColor" /> Stop Recording
-    </button>
-  )}
-
-  {/* Review Phase */}
-  {phase === 'review' && (
-    <div className="flex gap-6 justify-center">
-      <button className="flex flex-col items-center gap-1 text-indigo-600 hover:text-indigo-800">
-        <div className="w-10 h-10 rounded-full bg-white border border-indigo-100 flex items-center justify-center shadow-sm">
-          <Eye size={20} />
-        </div>
-        <span className="text-xs font-medium">Rewatch</span>
-      </button>
-      <button className="flex flex-col items-center gap-1 text-indigo-600 hover:text-indigo-800">
-        <div className="w-10 h-10 rounded-full bg-white border border-indigo-100 flex items-center justify-center shadow-sm">
-          <RotateCcw size={20} />
-        </div>
-        <span className="text-xs font-medium">Restart</span>
-      </button>
-      <button className="flex flex-col items-center gap-1 text-white">
-        <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center shadow-lg hover:bg-indigo-700">
-          <Save size={20} />
-        </div>
-        <span className="text-xs font-medium text-slate-900">Save</span>
-      </button>
-    </div>
-  )}
-</div>
-
-         {showNoteHint && (
+        {/* Onboarding Hint: Practice Mode - Below camera, above controls */}
+        {showNoteHint && phase === 'setup' && (
             <div className="mt-4">
                 <OnboardingHint 
-                    message="Use Notes to brainstorm your answer or take note during session."
+                    message="Select a recording mode below. 'Complete Session' gives you 60 seconds unrecorded to prepare, followed by 2 minutes and 30 seconds to record your answer. 'Answer Only' begins recording your answer immediately."
                     onDismiss={() => setShowNoteHint(false)}
                 />
             </div>
-)}
+        )}
+
+
+        {/* Controls Section */}
+        <div className="flex flex-col items-center py-4 min-h-[140px] justify-center">
+            
+            {/* Setup Phase - Mode Selection */}
+            {phase === 'setup' && (
+                <div className="w-full bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 className="font-bold text-slate-800 mb-2 text-center">Select Recording Mode</h3>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                        <label className={`flex-1 flex flex-col items-start gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${mode === 'prep-answer' ? 'border-indigo-600 bg-indigo-50' : 'border-slate-300 hover:border-indigo-300 hover:bg-slate-50'}`}>
+                            <div className="flex items-center gap-2 w-full">
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${mode === 'prep-answer' ? 'border-indigo-600' : 'border-slate-300'}`}>
+                                    {mode === 'prep-answer' && <div className="w-3 h-3 rounded-full bg-indigo-600"></div>}
+                                </div>
+                                <input 
+                                    type="radio" 
+                                    name="mode" 
+                                    className="sr-only" 
+                                    checked={mode === 'prep-answer'} 
+                                    onChange={() => setMode('prep-answer')} 
+                                />
+                                <span className={`font-semibold ${mode === 'prep-answer' ? 'text-indigo-600' : 'text-slate-900'}`}>Complete Session</span>
+                            </div>
+                        </label>
+
+                        <label className={`flex-1 flex flex-col items-start gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${mode === 'answer-only' ? 'border-indigo-600 bg-indigo-50' : 'border-slate-300 hover:border-indigo-300 hover:bg-slate-50'}`}>
+                            <div className="flex items-center gap-2 w-full">
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${mode === 'answer-only' ? 'border-indigo-600' : 'border-slate-300'}`}>
+                                    {mode === 'answer-only' && <div className="w-3 h-3 rounded-full bg-indigo-600"></div>}
+                                </div>
+                                <input 
+                                    type="radio" 
+                                    name="mode" 
+                                    className="sr-only" 
+                                    checked={mode === 'answer-only'} 
+                                    onChange={() => setMode('answer-only')} 
+                                />
+                                <span className={`font-semibold ${mode === 'answer-only' ? 'text-indigo-600' : 'text-slate-900'}`}>Answer-Only Session</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div className="flex justify-center">
+                        <button 
+                            onClick={handleStartSequence}
+                            className="flex items-center gap-2 px-10 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-semibold transition-transform transform hover:scale-105 shadow-md shadow-indigo-300"
+                        >
+                            Start Session
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Prep Controls */}
+            {phase === 'prep' && (
+                <button 
+                    onClick={() => {
+                        clearInterval(timerRef.current!);
+                        startPreAnswer();
+                    }}
+                    className="px-6 py-3 bg-indigo-600 text-white rounded-full font-medium shadow-md shadow-indigo-200 hover:bg-indigo-700 transition-colors"
+                >
+                    Skip preparation and start answering
+                </button>
+            )}
+
+            {/* Answering Controls */}
+            {phase === 'answering' && (
+                 <button 
+                    onClick={handleStopRecording}
+                    className="px-8 py-4 bg-indigo-600 text-white rounded-full font-semibold shadow-lg transition-colors"
+                >
+                    Stop Recording
+                </button>
+            )}
+
+            {/* Review Controls - REWATCH, RESTART, SAVE */}
+            {phase === 'review' && (
+                <div className="flex gap-4">
+                    <button 
+                        onClick={handleWatch}
+                        className="flex flex-col items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors group"
+                    >
+                        <div className="w-14 h-14 rounded-full bg-white border-2 border-indigo-200 flex items-center justify-center shadow-md group-hover:border-indigo-400 group-hover:shadow-lg transition-all">
+                            <Eye size={24} />
+                        </div>
+                        <span className="text-xs font-medium">Rewatch</span>
+                    </button>
+                    
+                    <button 
+                        onClick={resetSession}
+                        className="flex flex-col items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors group"
+                    >
+                        <div className="w-14 h-14 rounded-full bg-white border-2 border-indigo-200 flex items-center justify-center shadow-md group-hover:border-indigo-400 group-hover:shadow-lg transition-all">
+                            <RotateCcw size={24} />
+                        </div>
+                        <span className="text-xs font-medium">Restart</span>
+                    </button>
+                    
+                    <button 
+                        onClick={handleSaveRecording}
+                        className="flex flex-col items-center gap-2 text-white hover:text-white transition-colors group"
+                    >
+                        <div className="w-14 h-14 rounded-full bg-indigo-600 flex items-center justify-center shadow-lg group-hover:bg-indigo-700 group-hover:shadow-xl transition-all">
+                            <Bookmark size={24} />
+                        </div>
+                        <span className="text-xs font-medium text-indigo-600 group-hover:text-indigo-800">Save</span>
+                    </button>
+                </div>
+            )}
+        </div>
 
       {/* Notes Section - Below Controls */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-
+        {showPracticeHint && (
+            <div className="px-4 pt-4">
+                <OnboardingHint 
+                    message="Use Notes to brainstorm your answer or take note during session."
+                    onDismiss={() => setShowPracticeHint(false)}
+                />
+            </div>
+        )}
         <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
             <h3 className="font-semibold text-slate-800">Notes</h3>
             <span className="text-xs text-slate-500 italic">{note ? 'Saving...' : 'Auto-saves'}</span>
