@@ -33,7 +33,7 @@ const openDB = (): Promise<IDBDatabase> => {
   });
 };
 
-// Generic get all with User ID filtering
+// Generic get all with User ID filtering (ORIGINAL FUNCTIONALITY RESTORED)
 export const getAll = async <T extends { userId?: string }>(storeName: string, userId?: string): Promise<T[]> => {
   const db = await openDB();
   return new Promise((resolve, reject) => {
@@ -109,3 +109,18 @@ export const getNote = async (id: string, userId?: string): Promise<Note | undef
 export const getNotes = (userId?: string) => getAll<Note>(STORES.NOTES, userId);
 export const saveNote = (n: Note) => saveItem(STORES.NOTES, n);
 export const deleteNote = (id: string) => deleteItem(STORES.NOTES, id);
+
+// NEW FUNCTION: Deletes the entire IndexedDB on the client
+export const clearAllData = async (): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    // Delete the entire IndexedDB database by name
+    const request = indexedDB.deleteDatabase(DB_NAME);
+    request.onsuccess = () => {
+      // Log a success message in the browser console
+      console.log('SimplePrepDB cleared. Data will be fresh for usability testing.');
+      resolve();
+    };
+    request.onerror = (event) => reject('Error clearing database: ' + (event.target as any).error);
+    request.onblocked = () => reject('Could not clear database because it is still open elsewhere.');
+  });
+};
