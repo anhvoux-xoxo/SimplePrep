@@ -8,10 +8,14 @@ import { useAuth } from '../context/AuthContext';
 type PracticePhase = 'setup' | 'idle' | 'pre-prep' | 'prep' | 'pre-answer' | 'answering' | 'review';
 type PracticeMode = 'prep-answer' | 'answer-only';
 
-const OnboardingHint: React.FC<{ message: string; onDismiss: () => void }> = ({ message, onDismiss }) => (
+const OnboardingHint: React.FC<{ message: string; onDismiss: () => void; useInfoIcon?: boolean }> = ({ message, onDismiss, useInfoIcon = true }) => (
   <div className="bg-indigo-50 border border-indigo-100 p-3 rounded-xl flex justify-between items-start gap-3 animate-fade-in shadow-sm my-2">
     <div className="flex gap-2">
-        <Info size={16} className="text-indigo-600 mt-0.5" />
+        {useInfoIcon ? (
+          <Info size={16} className="text-indigo-600 mt-0.5" />
+        ) : (
+          <span className="material-symbols-outlined text-indigo-600 text-xl">info</span>
+        )}
         <p className="text-xs text-indigo-900 font-medium leading-relaxed">{message}</p>
     </div>
     <button onClick={onDismiss} className="text-indigo-400 hover:text-indigo-700">
@@ -391,7 +395,7 @@ const Practice: React.FC = () => {
         {/* Onboarding Hint: Prep Mode */}
         {showPracticeHint && phase === 'prep' && (
           <OnboardingHint 
-            message="Prep for 1 minute. This is not recorded. The last 3 seconds will count down automatically to start recording."
+            message="Use preparation time to gather your thoughts and prepare your answer. This part is not recorded"
             onDismiss={() => setShowPracticeHint(false)} 
           />
         )}
@@ -406,7 +410,7 @@ const Practice: React.FC = () => {
 
 
         {/* Camera Container */}
-        <div className="bg-black rounded-2xl overflow-hidden relative shadow-lg group aspect-video flex flex-col">
+        <div className="bg-black rounded-2xl overflow-hidden relative shadow-lg group flex flex-col" style={{ aspectRatio: '16/10' }}>
             
             {/* Prep Timer Overlay (Large Centered) */}
             {phase === 'prep' && (
@@ -415,17 +419,14 @@ const Practice: React.FC = () => {
                     <div className="text-8xl font-bold text-white tabular-nums tracking-tight">
                         {formatTime(timeLeft)}
                     </div>
-                    {timeLeft <= 3 && <p className="text-white mt-4 animate-pulse">Be ready to answer your question</p>}
                 </div>
             )}
 
             {/* Pre-Answer Countdown Overlay */}
              {phase === 'pre-answer' && (
-                <div className="absolute inset-0 z-20 bg-black/60 flex flex-col items-center justify-center text-center p-8 animate-pulse">
-                    <h3 className="text-3xl text-white font-semibold mb-4">
-                        Be ready to answer your question
-                    </h3>
-                    <h3 className="text-8xl font-bold text-white">{timeLeft}</h3>
+                <div className="absolute inset-0 z-20 bg-black/40 flex flex-col items-center justify-center text-center animate-fade-in">
+                    <span className="text-yellow-400 font-bold uppercase tracking-widest mb-4">Answer and Record will start in {timeLeft}s</span>
+                    <div className="text-8xl font-bold text-white tabular-nums tracking-tight">{timeLeft}</div>
                 </div>
             )}
             
@@ -447,26 +448,30 @@ const Practice: React.FC = () => {
         </div>
 
 
-        {/* Onboarding Hint: Practice Mode - Below camera, above controls */}
-        {showNoteHint && phase === 'setup' && (
-            <div className="mt-4">
-                <OnboardingHint 
-                    message="Select a recording mode below. 'Complete Session' gives you 60 seconds unrecorded to prepare, followed by 2 minutes and 30 seconds to record your answer. 'Answer Only' begins recording your answer immediately."
-                    onDismiss={() => setShowNoteHint(false)}
-                />
-            </div>
-        )}
-
-
         {/* Controls Section */}
         <div className="flex flex-col items-center py-4 min-h-[140px] justify-center">
             
             {/* Setup Phase - Mode Selection */}
             {phase === 'setup' && (
-                <div className="w-full bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 className="font-bold text-slate-800 mb-2 text-center">Select Recording Mode</h3>
+                <div className="w-full bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    {/* Onboarding Hint inside white background */}
+                    {showPracticeHint && (
+                        <div className="px-4 pt-4">
+                            <OnboardingHint 
+                                message="Select a recording mode below. 'Complete Session' gives you 60 seconds unrecorded to prepare, followed by 2 minutes and 30 seconds to record your answer. 'Answer Only' begins recording your answer immediately."
+                                onDismiss={() => setShowPracticeHint(false)}
+                                useInfoIcon={false}
+                            />
+                        </div>
+                    )}
                     
-                    <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                    {/* Gray elevated header with label */}
+                    <div className="p-4 border-b border-slate-200 bg-slate-50">
+                        <h3 className="font-semibold text-slate-800">Select Recording Mode</h3>
+                    </div>
+                    
+                    <div className="p-6">
+                        <div className="flex flex-col sm:flex-row gap-3 mb-6">
                         <label className={`flex-1 flex flex-col items-start gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${mode === 'prep-answer' ? 'border-indigo-600 bg-indigo-50' : 'border-slate-300 hover:border-indigo-300 hover:bg-slate-50'}`}>
                             <div className="flex items-center gap-2 w-full">
                                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${mode === 'prep-answer' ? 'border-indigo-600' : 'border-slate-300'}`}>
@@ -499,13 +504,14 @@ const Practice: React.FC = () => {
                             </div>
                         </label>
                     </div>
-                    <div className="flex justify-center">
-                        <button 
-                            onClick={handleStartSequence}
-                            className="flex items-center gap-2 px-10 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-semibold transition-transform transform hover:scale-105 shadow-md shadow-indigo-300"
-                        >
-                            Start Session
-                        </button>
+                        <div className="flex justify-center">
+                            <button 
+                                onClick={handleStartSequence}
+                                className="w-full max-w-sm px-8 py-4 bg-indigo-600 hover:bg-indigo-600 text-white font-semibold shadow-md rounded-full hover:rounded-lg transition-all duration-700 ease-in-out"
+                            >
+                                Start Session
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -517,7 +523,7 @@ const Practice: React.FC = () => {
                         clearInterval(timerRef.current!);
                         startPreAnswer();
                     }}
-                    className="px-6 py-3 bg-indigo-600 text-white rounded-full font-medium shadow-md shadow-indigo-200 hover:bg-indigo-700 transition-colors"
+                    className="w-full max-w-sm px-8 py-4 bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-600 transition-all duration-700 ease-in-out rounded-full hover:rounded-lg"
                 >
                     Skip preparation and start answering
                 </button>
@@ -527,7 +533,7 @@ const Practice: React.FC = () => {
             {phase === 'answering' && (
                  <button 
                     onClick={handleStopRecording}
-                    className="px-8 py-4 bg-indigo-600 text-white rounded-full font-semibold shadow-lg transition-colors"
+                    className="w-full max-w-sm px-8 py-4 bg-indigo-600 text-white font-semibold shadow-lg hover:bg-indigo-600 transition-all duration-700 ease-in-out rounded-full hover:rounded-lg"
                 >
                     Stop Recording
                 </button>
@@ -571,14 +577,6 @@ const Practice: React.FC = () => {
 
       {/* Notes Section - Below Controls */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        {showPracticeHint && (
-            <div className="px-4 pt-4">
-                <OnboardingHint 
-                    message="Use Notes to brainstorm your answer or take note during session."
-                    onDismiss={() => setShowPracticeHint(false)}
-                />
-            </div>
-        )}
         <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
             <h3 className="font-semibold text-slate-800">Notes</h3>
             <span className="text-xs text-slate-500 italic">{note ? 'Saving...' : 'Auto-saves'}</span>
@@ -586,8 +584,11 @@ const Practice: React.FC = () => {
         <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="w-full h-40 p-4 resize-y focus:outline-none focus:ring-2 focus:ring-black text-black bg-white leading-relaxed text-base"
-            placeholder="Type your thoughts, brainstorming ideas, or feedback here..."
+            className="w-full h-40 p-4 resize-y focus:outline-none focus:ring-2 focus:ring-black text-black bg-white leading-relaxed text-base placeholder:italic"
+            placeholder="Type your notes here...&#10;&#10;Hint: Use this space to brainstorm your answers or jot down notes during the interview session"
+            style={{
+              fontSize: 'inherit'
+            }}
         />
         <div className="p-3 bg-slate-50 border-t border-slate-200 text-right">
              <button 
