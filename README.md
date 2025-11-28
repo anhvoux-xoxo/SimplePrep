@@ -1,20 +1,7 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+<div align="center"> <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" /> </div>
+Try the SimplePrep 3.0 App 🚀
 
-# Run and deploy your AI Studio app
+Experience our AI-powered practice app live:
+Open SimplePrep 3.0
 
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/drive/1N5nSyov4F43ia-IthgmDsfDiLv0RB9uW
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+SimplePrep 3.0 helps you practice, record, and review answers efficiently with a clean, interactive interface. Give it a try and see how it can improve your preparation workflow!
