@@ -1,13 +1,13 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Video, Mic, Film, Hexagon, NotebookPen, User, LogIn, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Hexagon, User, LogIn, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const NavItem = ({ to, icon: Icon, label }: { to: string; icon: any; label: string }) => (
+const NavItem = ({ to, iconName, label }: { to: string; iconName: string; label: string }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
@@ -18,7 +18,7 @@ const NavItem = ({ to, icon: Icon, label }: { to: string; icon: any; label: stri
       }`
     }
   >
-    <Icon size={20} />
+    <span className="material-symbols-outlined">{iconName}</span>
     <span className="font-medium">{label}</span>
   </NavLink>
 );
@@ -40,10 +40,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
 
           <nav className="p-4 space-y-1">
-            <NavItem to="/" icon={LayoutDashboard} label="Dashboard" />
-            <NavItem to="/practice" icon={Video} label="Practice" />
-            <NavItem to="/recorded" icon={Film} label="Recorded" />
-            <NavItem to="/notes" icon={NotebookPen} label="Notes" />
+            <NavItem to="/" iconName="dashboard_customize" label="Dashboard" />
+            <NavItem to="/practice" iconName="videocam" label="Practice" />
+            <NavItem to="/recorded" iconName="history_2" label="Recorded" />
+            <NavItem to="/notes" iconName="note" label="Notes" />
           </nav>
         </div>
 

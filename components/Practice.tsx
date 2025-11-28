@@ -457,17 +457,20 @@ const Practice: React.FC = () => {
 )}
 
 
-        {/* Controls Section */}
-<div className="flex flex-col items-center py-4 min-h-[140px] justify-center space-y-6">
+    {/* Controls Section */}
+<div className="flex flex-col items-center py-4 min-h-[140px] justify-center space-y-6 max-w-4xl mx-auto pb-20">
 
   {/* Setup Phase */}
   {phase === 'setup' && (
-    <div className="w-full max-w-lg bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+    <div className="w-full bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
       <h3 className="font-bold text-slate-800 mb-4 text-center text-lg">Select Practice Mode</h3>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         {/* Complete Session */}
-        <label className={`flex-1 cursor-pointer rounded-xl border transition-all p-4 ${mode === 'prep-answer' ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-200' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}>
+        <label
+          className={`flex-1 cursor-pointer rounded-full border transition-all px-4 py-3 flex items-center justify-center
+            ${mode === 'prep-answer' ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-200' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}
+        >
           <div className="flex items-center gap-2">
             <input
               type="radio"
@@ -476,12 +479,17 @@ const Practice: React.FC = () => {
               checked={mode === 'prep-answer'}
               onChange={() => setMode('prep-answer')}
             />
-            <span className={`font-semibold ${mode === 'prep-answer' ? 'text-indigo-600' : 'text-slate-900'}`}>Complete Session</span>
+            <span className={`font-semibold ${mode === 'prep-answer' ? 'text-indigo-600' : 'text-slate-900'}`}>
+              Complete Session
+            </span>
           </div>
         </label>
 
         {/* Answer-Only Session */}
-        <label className={`flex-1 cursor-pointer rounded-xl border transition-all p-4 ${mode === 'answer-only' ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-200' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}>
+        <label
+          className={`flex-1 cursor-pointer rounded-full border transition-all px-4 py-3 flex items-center justify-center
+            ${mode === 'answer-only' ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-200' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}
+        >
           <div className="flex items-center gap-2">
             <input
               type="radio"
@@ -490,7 +498,9 @@ const Practice: React.FC = () => {
               checked={mode === 'answer-only'}
               onChange={() => setMode('answer-only')}
             />
-            <span className={`font-semibold ${mode === 'answer-only' ? 'text-indigo-600' : 'text-slate-900'}`}>Answer-Only Session</span>
+            <span className={`font-semibold ${mode === 'answer-only' ? 'text-indigo-600' : 'text-slate-900'}`}>
+              Answer-Only Session
+            </span>
           </div>
         </label>
       </div>
@@ -525,8 +535,7 @@ const Practice: React.FC = () => {
       onClick={handleStopRecording}
       className="flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-semibold shadow-lg animate-pulse"
     >
-      <Square size={16} fill="currentColor" />
-      Stop Recording
+      <Square size={16} fill="currentColor" /> Stop Recording
     </button>
   )}
 
@@ -539,14 +548,12 @@ const Practice: React.FC = () => {
         </div>
         <span className="text-xs font-medium">Rewatch</span>
       </button>
-
       <button className="flex flex-col items-center gap-1 text-indigo-600 hover:text-indigo-800">
         <div className="w-10 h-10 rounded-full bg-white border border-indigo-100 flex items-center justify-center shadow-sm">
           <RotateCcw size={20} />
         </div>
         <span className="text-xs font-medium">Restart</span>
       </button>
-
       <button className="flex flex-col items-center gap-1 text-white">
         <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center shadow-lg hover:bg-indigo-700">
           <Save size={20} />
