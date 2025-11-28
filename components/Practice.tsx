@@ -507,7 +507,7 @@ const Practice: React.FC = () => {
                         <div className="flex justify-center">
                             <button 
                                 onClick={handleStartSequence}
-                                className="w-full max-w-sm px-8 py-4 bg-indigo-600 hover:bg-indigo-600 text-white font-semibold shadow-md rounded-full hover:rounded-lg transition-all duration-700 ease-in-out"
+                                className="w-full max-w-sm px-8 py-4 bg-indigo-600 text-white font-semibold shadow-md rounded-full hover:rounded-lg hover:bg-indigo-700 transition-all duration-400 ease-in-out"
                             >
                                 Start Session
                             </button>
@@ -523,7 +523,7 @@ const Practice: React.FC = () => {
                         clearInterval(timerRef.current!);
                         startPreAnswer();
                     }}
-                    className="w-full max-w-sm px-8 py-4 bg-indigo-600 text-white font-semibold shadow-md hover:bg-indigo-600 transition-all duration-700 ease-in-out rounded-full hover:rounded-lg"
+                    className="w-full max-w-sm px-8 py-4 bg-indigo-600 text-white font-semibold shadow-md rounded-full hover:rounded-lg hover:bg-indigo-700 transition-all duration-400 ease-in-out"
                 >
                     Skip preparation and start answering
                 </button>
@@ -533,7 +533,7 @@ const Practice: React.FC = () => {
             {phase === 'answering' && (
                  <button 
                     onClick={handleStopRecording}
-                    className="w-full max-w-sm px-8 py-4 bg-indigo-600 text-white font-semibold shadow-lg hover:bg-indigo-600 transition-all duration-700 ease-in-out rounded-full hover:rounded-lg"
+                    className="w-full max-w-sm px-8 py-4 bg-indigo-600 text-white font-semibold shadow-lg rounded-full hover:rounded-lg hover:bg-indigo-700 transition-all duration-400 ease-in-out"
                 >
                     Stop Recording
                 </button>
