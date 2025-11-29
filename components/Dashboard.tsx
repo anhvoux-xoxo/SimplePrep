@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
-import { Plus, Sparkles, Trash2, Edit3, Save, Star, Bookmark, BookmarkCheck, Video, X, Check, Filter, ListChecks } from 'lucide-react';
+import { Plus, Sparkles, Trash2, Edit3, Save, Star, Bookmark, BookmarkCheck, Video, X, Check, Filter, ListChecks, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Question, QuestionCategory } from '../types';
 import { generateInterviewQuestions } from '../services/geminiService';
@@ -17,12 +16,16 @@ const CATEGORY_OPTIONS = [
   { label: 'Technical', value: QuestionCategory.TECHNICAL },
 ];
 
-const OnboardingHint: React.FC<{ message: string; onDismiss: () => void }> = ({ message, onDismiss }) => (
+const OnboardingHint: React.FC<{ message: string; onDismiss: () => void; useInfoIcon?: boolean }> = ({ message, onDismiss, useInfoIcon = false }) => (
   <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-xl flex justify-between items-start gap-4 mb-6 animate-fade-in shadow-sm">
     <div className="flex gap-3">
-        <div className="mt-0.5 text-indigo-600 bg-white rounded-full p-1 shadow-sm">
+        {useInfoIcon ? (
+          <span className="material-symbols-outlined text-indigo-600 mt-0.5" style={{ fontSize: '20px' }}>info</span>
+        ) : (
+          <div className="mt-0.5 text-indigo-600 bg-white rounded-full p-1 shadow-sm">
             <Sparkles size={16} fill="currentColor" />
-        </div>
+          </div>
+        )}
         <p className="text-sm text-indigo-900 font-medium leading-relaxed">{message}</p>
     </div>
     <button onClick={onDismiss} className="text-indigo-400 hover:text-indigo-700 transition-colors">
@@ -34,6 +37,28 @@ const OnboardingHint: React.FC<{ message: string; onDismiss: () => void }> = ({ 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  
+  // Load Material Symbols font
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=info';
+    
+    const style = document.createElement('style');
+    style.textContent = `
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    `;
+    
+    if (!document.querySelector('link[href*="Material+Symbols"]')) {
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('style[data-material-symbols]')) {
+      style.setAttribute('data-material-symbols', 'true');
+      document.head.appendChild(style);
+    }
+  }, []);
   
   const [sessionName, setSessionName] = useState('');
   const [jobDescription, setJobDescription] = useState('');
@@ -242,9 +267,10 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-fade-in pb-24">
+      
       <header className="mb-6">
         <h2 className="text-2xl font-bold text-slate-800">Dashboard</h2>
-        <p className="text-slate-500">Manage your interview preparation material.</p>
+        <p className="text-slate-500">SimplePrep helps you easily manage interview materials and record your practice sessions</p>
       </header>
 
       {/* Input Section */}
@@ -256,8 +282,8 @@ const Dashboard: React.FC = () => {
                 <label className="block text-sm font-semibold text-slate-800 mb-2">Interview Session Name</label>
                 <input
                     type="text"
-                    className="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black text-black bg-white"
-                    placeholder="e.g. Google Frontend Role"
+                    className="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black text-black bg-white placeholder:italic"
+                    placeholder="Hint: Enter your role here"
                     value={sessionName}
                     onChange={(e) => setSessionName(e.target.value)}
                 />
@@ -265,8 +291,8 @@ const Dashboard: React.FC = () => {
 
             <label className="block text-sm font-semibold text-slate-800 mb-2">Job Description</label>
             <textarea
-              className="w-full h-48 p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black resize-y text-black bg-white text-base"
-              placeholder="Paste the job description here to generate tailored questions..."
+              className="w-full h-48 p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black resize-y text-black bg-white text-base placeholder:italic"
+              placeholder="Hint: Paste the job description here and select types of interview questions to generate with AI"
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
             />
@@ -292,10 +318,10 @@ const Dashboard: React.FC = () => {
               <button
                 onClick={handleGenerate}
                 disabled={loading || !jobDescription || !activeGenTab}
-                className={`flex-1 flex items-center justify-center gap-2 px-6 py-2 rounded-lg font-medium transition-all shadow-sm ${
+                className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 font-semibold transition-all duration-[400ms] ease-in-out shadow-md ${
                   loading || !jobDescription || !activeGenTab
-                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
-                    : 'bg-indigo-600 text-white shadow-indigo-200 hover:bg-indigo-700 border border-indigo-600'
+                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200 rounded-full'
+                    : 'bg-indigo-600 text-white rounded-full hover:rounded-lg hover:bg-indigo-700 border border-indigo-600'
                 }`}
               >
                 {loading ? (
@@ -327,8 +353,9 @@ const Dashboard: React.FC = () => {
                 {showCustomQHint && (
                     <div className="mt-4">
                         <OnboardingHint 
-                            message="Manually add your own interview questions to practice."
+                            message="Manually add your own interview questions here to practice."
                             onDismiss={() => setShowCustomQHint(false)}
+                            useInfoIcon={true}
                         />
                     </div>
                 )}
@@ -354,7 +381,7 @@ const Dashboard: React.FC = () => {
                 />
                 <button 
                     onClick={handleManualAdd}
-                    className="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 shadow-md shadow-indigo-100 border border-indigo-600"
+                    className="w-full bg-indigo-600 text-white py-4 font-semibold shadow-md rounded-full hover:rounded-lg hover:bg-indigo-700 border border-indigo-600 transition-all duration-[400ms] ease-in-out"
                 >
                     Save Question
                 </button>
@@ -369,8 +396,9 @@ const Dashboard: React.FC = () => {
         {/* Onboarding Hint */}
         {showSelectionHint && questions.length > 0 && (
           <OnboardingHint 
-            message="Select the question(s) you want to practice below. You can practice all of them at once or choose specific ones."
+            message="Select the question(s) you want to practice below."
             onDismiss={() => setShowSelectionHint(false)}
+            useInfoIcon={true}
           />
         )}
 

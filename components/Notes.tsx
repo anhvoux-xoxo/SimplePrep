@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Note, Question } from '../types';
 import { getNotes, saveNote, getQuestions, deleteNote } from '../services/db';
-import { Plus, NotebookPen, Calendar, FileText, X, Save, Trash2 } from 'lucide-react';
+import { Plus, NotebookPen, Calendar, FileText, X, Save, Trash2, Bookmark } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Notes: React.FC = () => {
@@ -18,6 +18,28 @@ const Notes: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
+
+  // Load Material Symbols font
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=bookmark';
+    
+    const style = document.createElement('style');
+    style.textContent = `
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    `;
+    
+    if (!document.querySelector('link[href*="Material+Symbols"]')) {
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('style[data-material-symbols]')) {
+      style.setAttribute('data-material-symbols', 'true');
+      document.head.appendChild(style);
+    }
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -108,28 +130,33 @@ const Notes: React.FC = () => {
 
       {/* Manual Add Form */}
       {showAdd && (
-        <div className="bg-white p-6 rounded-2xl shadow-md border border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">New Note</h3>
-          <input
-            type="text"
-            value={newNoteTitle}
-            onChange={(e) => setNewNoteTitle(e.target.value)}
-            className="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:ring-2 focus:ring-black text-black bg-white font-medium"
-            placeholder="Title"
-          />
-          <textarea
-            value={newNoteContent}
-            onChange={(e) => setNewNoteContent(e.target.value)}
-            className="w-full h-32 p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black resize-y text-black bg-white text-base mb-4"
-            placeholder="Write your note here..."
-          />
-          <div className="flex justify-end">
-            <button
-              onClick={handleSaveManualNote}
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 shadow-md shadow-indigo-200"
-            >
-              Save Note
-            </button>
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="p-4 border-b border-slate-200 bg-slate-50">
+            <h3 className="font-semibold text-slate-800">New Note</h3>
+          </div>
+          <div className="p-6">
+            <input
+              type="text"
+              value={newNoteTitle}
+              onChange={(e) => setNewNoteTitle(e.target.value)}
+              className="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:ring-2 focus:ring-black text-black bg-white font-medium"
+              placeholder="Title"
+            />
+            <textarea
+              value={newNoteContent}
+              onChange={(e) => setNewNoteContent(e.target.value)}
+              className="w-full h-32 p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black resize-y text-black bg-white text-base mb-4"
+              placeholder="Write your note here..."
+            />
+            <div className="flex justify-end">
+              <button
+                onClick={handleSaveManualNote}
+                className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 shadow-md shadow-indigo-200"
+              >
+                <Bookmark size={18} />
+                Save Note
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -152,71 +179,79 @@ const Notes: React.FC = () => {
           return (
             <div 
                 key={note.id} 
-                className={`bg-white p-6 rounded-2xl shadow-sm border border-slate-200 transition-all flex flex-col cursor-pointer ${isExpanded ? 'ring-2 ring-indigo-100' : 'hover:border-indigo-300'}`}
+                className={`bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all ${isExpanded ? 'md:col-span-2' : ''} ${!isExpanded ? 'cursor-pointer hover:border-indigo-300' : ''}`}
                 onClick={() => !isExpanded && startEditing(note, displayTitle)}
             >
-              <div className="flex items-start justify-between mb-3">
-                 <div className="flex items-center gap-2">
-                    <div className={`p-2 rounded-lg ${isManual ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>
-                        {isManual ? <NotebookPen size={20} /> : <FileText size={20} />}
-                    </div>
+              {/* Header */}
+              <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${isManual ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>
+                      {isManual ? <NotebookPen size={18} /> : <FileText size={18} />}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-800 text-sm">{displayTitle}</h3>
                     <span className="text-xs text-slate-400 flex items-center gap-1">
                         <Calendar size={12} />
                         {new Date(note.lastUpdated).toLocaleDateString()}
                     </span>
-                 </div>
+                  </div>
+                </div>
                  
-                 <button 
-                    onClick={(e) => handleDelete(note.id, e)}
-                    className="text-slate-300 hover:text-red-500 p-1"
-                    title="Delete Note"
-                 >
-                    <Trash2 size={16} />
-                 </button>
+                <button 
+                  onClick={(e) => handleDelete(note.id, e)}
+                  className="text-slate-400 hover:text-red-500 p-2 transition-colors"
+                  title="Delete Note"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
               
-              {isExpanded ? (
-                  <div className="flex-1 flex flex-col gap-3 cursor-default" onClick={(e) => e.stopPropagation()}>
-                       <input 
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            className="w-full p-2 border border-slate-300 rounded text-black bg-white font-semibold"
-                            placeholder="Title"
-                       />
-                       <textarea 
-                            value={editContent}
-                            onChange={(e) => setEditContent(e.target.value)}
-                            className="w-full flex-1 p-2 border border-slate-300 rounded text-black bg-white text-sm leading-relaxed resize-y min-h-[150px]"
-                            placeholder="Content"
-                       />
-                       <div className="flex justify-end gap-2 mt-2">
-                           <button 
-                                onClick={(e) => { e.stopPropagation(); setExpandedId(null); }}
-                                className="px-3 py-1.5 text-sm text-slate-500 hover:text-slate-700"
-                           >
-                               Cancel
-                           </button>
-                           <button 
-                                onClick={(e) => { e.stopPropagation(); saveEdit(note); }}
-                                className="flex items-center gap-1 px-4 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                           >
-                               <Save size={14} />
-                               Save
-                           </button>
-                       </div>
-                  </div>
-              ) : (
-                  <>
-                    <h3 className="font-semibold text-slate-800 mb-3 line-clamp-2 min-h-[1.5em]" title={displayTitle}>
-                        {displayTitle}
-                    </h3>
-                    <div className="flex-1 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                        <p className="text-slate-600 text-sm whitespace-pre-wrap leading-relaxed font-normal line-clamp-4">
+              {/* Content */}
+              <div className="p-6">
+                {isExpanded ? (
+                    <div className="flex flex-col gap-4 cursor-default" onClick={(e) => e.stopPropagation()}>
+                         <div>
+                           <label className="block text-xs font-semibold text-slate-500 uppercase mb-2">Title</label>
+                           <input 
+                                value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                                className="w-full p-3 border border-slate-300 rounded-lg text-black bg-white font-medium focus:ring-2 focus:ring-black"
+                                placeholder="Title"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-xs font-semibold text-slate-500 uppercase mb-2">Content</label>
+                           <textarea 
+                                value={editContent}
+                                onChange={(e) => setEditContent(e.target.value)}
+                                className="w-full p-4 border border-slate-300 rounded-lg text-black bg-white text-base leading-relaxed resize-y min-h-[200px] focus:ring-2 focus:ring-black"
+                                placeholder="Content"
+                           />
+                         </div>
+                         <div className="flex justify-end gap-2 mt-2">
+                             <button 
+                                  onClick={(e) => { e.stopPropagation(); setExpandedId(null); }}
+                                  className="px-4 py-2 text-sm text-slate-600 hover:text-slate-800 font-medium"
+                             >
+                                 Cancel
+                             </button>
+                             <button 
+                                  onClick={(e) => { e.stopPropagation(); saveEdit(note); }}
+                                  className="flex items-center gap-2 px-6 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-md shadow-indigo-200"
+                             >
+                                 <Bookmark size={16} />
+                                 Save
+                             </button>
+                         </div>
+                    </div>
+                ) : (
+                    <div className="bg-white">
+                        <p className="text-slate-600 text-sm whitespace-pre-wrap leading-relaxed line-clamp-4">
                             {note.content}
                         </p>
                     </div>
-                  </>
-              )}
+                )}
+              </div>
             </div>
           );
         })}
