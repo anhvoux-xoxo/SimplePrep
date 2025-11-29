@@ -43,7 +43,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <NavItem to="/" iconName="dashboard_customize" label="Dashboard" />
             <NavItem to="/practice" iconName="videocam" label="Practice" />
             <NavItem to="/recorded" iconName="history_2" label="Recorded" />
-            <NavItem to="/notes" iconName="note" label="Notes" />
+            <NavItem to="/notes" iconName="note_stack_add" label="Notes" />
           </nav>
         </div>
 
@@ -72,12 +72,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </NavLink>
             )}
 
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 hidden md:block">
-                <p className="text-xs text-slate-500 font-medium uppercase mb-2">Pro Tip</p>
-                <p className="text-sm text-slate-600">
-                Record answers using the STAR method: Situation, Task, Action, Result.
-                </p>
-            </div>
+        
         </div>
       </aside>
 

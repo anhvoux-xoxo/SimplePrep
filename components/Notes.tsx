@@ -117,7 +117,6 @@ const Notes: React.FC = () => {
       <header className="flex justify-between items-end">
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Notes</h2>
-          <p className="text-slate-500">All your session notes and brainstorms.</p>
         </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
@@ -185,9 +184,7 @@ const Notes: React.FC = () => {
               {/* Header */}
               <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${isManual ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>
-                      {isManual ? <NotebookPen size={18} /> : <FileText size={18} />}
-                  </div>
+                
                   <div>
                     <h3 className="font-semibold text-slate-800 text-sm">{displayTitle}</h3>
                     <span className="text-xs text-slate-400 flex items-center gap-1">
