@@ -591,13 +591,7 @@ const Practice: React.FC = () => {
             }}
         />
         <div className="p-3 bg-slate-50 border-t border-slate-200 text-right">
-             <button 
-                onClick={handleImportToNotes}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1 ml-auto"
-            >
-                <FolderInput size={14} />
-                Import to Notes
-            </button>
+            
         </div>
       </div>
     </div>

@@ -517,13 +517,19 @@ const Dashboard: React.FC = () => {
                                     placeholder="Add talking points here..."
                                 />
                                 <div className="flex gap-2 mt-2">
-                                    <button onClick={() => saveEdit(q)} className="flex items-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium text-sm">
-                                        <Save size={16} /> Save Changes
-                                    </button>
-                                    <button onClick={() => setEditingId(null)} className="flex items-center gap-1 px-3 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 text-sm">
-                                        <X size={16} /> Cancel
-                                    </button>
-                                </div>
+                              <button 
+                                  onClick={() => saveEdit(q)} 
+                                  className="flex items-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium text-sm"
+                              >
+                                  <span className="material-symbols-outlined">bookmark</span> Save
+                              </button>
+                              <button 
+                                  onClick={() => setEditingId(null)} 
+                                  className="flex items-center gap-1 px-3 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 text-sm"
+                              >
+                                  <X size={16} /> Cancel
+                              </button>
+                          </div>
                             </div>
                         ) : (
                             <div>

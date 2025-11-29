@@ -84,7 +84,7 @@ const Library: React.FC = () => {
     <div className="space-y-6 pb-20">
       <header>
         <h2 className="text-2xl font-bold text-slate-800">Recorded</h2>
-        <p className="text-slate-500">Review your past practice sessions and notes.</p>
+        <p className="text-slate-500">Review your saved practice and notes</p>
       </header>
 
       {recordings.length === 0 ? (
@@ -157,21 +157,14 @@ const Library: React.FC = () => {
                                         <span>Notes</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <button 
-                                            onClick={() => copyToClipboard(currentNote)} 
-                                            className="text-indigo-600 hover:text-indigo-800 p-1 rounded hover:bg-indigo-100 transition-colors flex items-center gap-1"
-                                            title="Copy"
-                                        >
-                                            <Copy size={14} />
-                                            <span className="text-xs">Copy</span>
-                                        </button>
+                        
                                         <button 
                                             onClick={() => addToNotes(rec, currentNote)} 
                                             className="text-indigo-600 hover:text-indigo-800 p-1 rounded hover:bg-indigo-100 transition-colors flex items-center gap-1"
-                                            title="Add to Notes"
+                                            title="Save to Notes"
                                         >
                                             <FolderPlus size={14} />
-                                            <span className="text-xs">Add to Notes</span>
+                                            <span className="text-xs">Save to Notes</span>
                                         </button>
                                     </div>
                                 </div>

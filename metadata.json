@@ -1,5 +1,5 @@
 {
-  "name": "SimplePrep 3.0",
+  "name": "SimplePrep",
   "description": "A modern, AI-powered interview preparation platform and mobile application with video practice and session management",
   "requestFramePermissions": [
     "camera",
