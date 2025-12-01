@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Plus, Sparkles, Trash2, Edit3, Save, Star, Bookmark, BookmarkCheck, Video, X, Check, Filter, ListChecks, Info } from 'lucide-react';
+import { Plus, Sparkles, Trash2, Edit3, Star, Bookmark, BookmarkCheck, Video, X, Check, Filter, ListChecks, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Question, QuestionCategory } from '../types';
 import { generateInterviewQuestions } from '../services/geminiService';
@@ -42,7 +42,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=info';
+    link.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=bookmark,info';
     
     const style = document.createElement('style');
     style.textContent = `
@@ -302,7 +302,7 @@ const Dashboard: React.FC = () => {
                  <select
                     value={activeGenTab}
                     onChange={(e) => setActiveGenTab(e.target.value as QuestionCategory)}
-                    className="w-full appearance-none px-6 py-2 bg-white text-slate-700 border border-slate-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm cursor-pointer whitespace-normal h-full"
+                    className="w-full appearance-none px-6 py-2 bg-white text-slate-700 border-2 border-slate-300 hover:border-indigo-300 hover:bg-slate-50 focus:border-indigo-600 focus:bg-indigo-50 rounded-lg text-sm font-medium focus:outline-none shadow-sm cursor-pointer whitespace-normal h-full transition-all"
                     style={{ minHeight: '42px' }}
                   >
                     <option value="" disabled className="bg-white text-slate-700">Select Your Interview Questions</option>
@@ -402,21 +402,21 @@ const Dashboard: React.FC = () => {
           />
         )}
 
-        <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center mb-6 border-b border-slate-200 pb-4 gap-4">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 border-b border-slate-200 pb-4 gap-4">
             <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                 Practice Questions
             </h3>
             
-            <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
+            <div className="flex flex-nowrap gap-2 items-center w-full lg:w-auto">
                 {/* Session Filter Dropdown */}
-                <div className="relative flex-grow sm:flex-grow-0 min-w-[220px]">
+                <div className="relative flex-1 lg:flex-initial min-w-0 lg:min-w-[200px]">
                      <select
                         value={activeListTab === 'Session' ? selectedSessionFilter : ''}
                         onChange={handleSessionFilterChange}
-                        className={`w-full appearance-none px-6 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer border ${
+                        className={`w-full appearance-none px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer border-2 ${
                              activeListTab === 'Session'
-                             ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-200'
-                             : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
+                             ? 'border-indigo-600 bg-indigo-50 text-slate-700 shadow-md shadow-indigo-200'
+                             : 'border-slate-300 bg-white text-slate-600 hover:border-indigo-300 hover:bg-slate-50'
                         }`}
                      >
                         <option value="" disabled className="bg-white text-black">Select Interview Session</option>
@@ -430,7 +430,7 @@ const Dashboard: React.FC = () => {
                         <option disabled className="bg-white text-slate-300">──────────</option>
                         <option value="ADD_NEW_SESSION_MAGIC_VAL" className="text-indigo-600 font-semibold bg-white">Add New Interview Session</option>
                      </select>
-                     <div className={`absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none ${activeListTab === 'Session' ? 'text-white' : 'text-slate-500'}`}>
+                     <div className={`absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none ${activeListTab === 'Session' ? 'text-slate-700' : 'text-slate-500'}`}>
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
                      </div>
                 </div>
@@ -439,10 +439,10 @@ const Dashboard: React.FC = () => {
                     <button
                         key={tab}
                         onClick={() => { setActiveListTab(tab); setSelectedIds(new Set()); }}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+                        className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap border-2 ${
                             activeListTab === tab 
-                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-200' 
-                            : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
+                            ? 'bg-indigo-50 text-slate-700 border-indigo-600 shadow-md shadow-indigo-200' 
+                            : 'bg-white text-slate-600 border-slate-300 hover:border-indigo-300 hover:bg-slate-50'
                         }`}
                     >
                         {tab}
@@ -517,19 +517,13 @@ const Dashboard: React.FC = () => {
                                     placeholder="Add talking points here..."
                                 />
                                 <div className="flex gap-2 mt-2">
-                              <button 
-                                  onClick={() => saveEdit(q)} 
-                                  className="flex items-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium text-sm"
-                              >
-                                  <span className="material-symbols-outlined">bookmark</span> Save Changes
-                              </button>
-                              <button 
-                                  onClick={() => setEditingId(null)} 
-                                  className="flex items-center gap-1 px-3 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 text-sm"
-                              >
-                                  <X size={16} /> Cancel
-                              </button>
-                          </div>
+                                    <button onClick={() => saveEdit(q)} className="flex items-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium text-sm">
+                                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>bookmark</span> Save Changes
+                                    </button>
+                                    <button onClick={() => setEditingId(null)} className="flex items-center gap-1 px-3 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 text-sm">
+                                        <X size={16} /> Cancel
+                                    </button>
+                                </div>
                             </div>
                         ) : (
                             <div>
