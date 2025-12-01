@@ -521,7 +521,7 @@ const Dashboard: React.FC = () => {
                                   onClick={() => saveEdit(q)} 
                                   className="flex items-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium text-sm"
                               >
-                                  <span className="material-symbols-outlined">bookmark</span> Save
+                                  <span className="material-symbols-outlined">bookmark</span> Save Changes
                               </button>
                               <button 
                                   onClick={() => setEditingId(null)} 

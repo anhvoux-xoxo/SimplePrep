@@ -227,17 +227,18 @@ const Notes: React.FC = () => {
                          </div>
                          <div className="flex justify-end gap-2 mt-2">
                              <button 
-                                  onClick={(e) => { e.stopPropagation(); setExpandedId(null); }}
-                                  className="px-4 py-2 text-sm text-slate-600 hover:text-slate-800 font-medium"
-                             >
-                                 Cancel
-                             </button>
+                                  onClick={() => setEditingId(null)} 
+                                  className="flex items-center gap-1 px-3 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 text-sm"
+                              >
+                                  <X size={16} /> Cancel
+                              </button>
+                              
                              <button 
                                   onClick={(e) => { e.stopPropagation(); saveEdit(note); }}
                                   className="flex items-center gap-2 px-6 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-md shadow-indigo-200"
                              >
                                  <Bookmark size={16} />
-                                 Save
+                                 Save Changes
                              </button>
                          </div>
                     </div>
