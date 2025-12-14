@@ -305,7 +305,7 @@ const Dashboard: React.FC = () => {
                     className="w-full appearance-none px-6 py-2 bg-white text-slate-700 border-2 border-slate-300 hover:border-indigo-300 hover:bg-slate-50 focus:border-indigo-600 focus:bg-indigo-50 rounded-lg text-sm font-medium focus:outline-none shadow-sm cursor-pointer whitespace-normal h-full transition-all"
                     style={{ minHeight: '42px' }}
                   >
-                    <option value="" disabled className="bg-white text-slate-700">Select Your Interview Questions</option>
+                    <option value="" disabled className="bg-white text-slate-700">Select Interview Questions</option>
                     {CATEGORY_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value} className="bg-white text-slate-700">{opt.label}</option>
                     ))}
